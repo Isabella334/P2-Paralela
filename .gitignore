@@ -1,0 +1,11 @@
+# Informe (Persona 2) - no se sube al repo
+Persona2_Avance.md
+
+# Binarios compilados
+bruteforce_seq
+bruteforce_mpi
+*.o
+*.exe
+
+# Datos de resultados (opcional: quita esta linea si SI quieres subir el CSV)
+# resultados.csv
