@@ -1,22 +1,3 @@
-/* ============================================================================
- * des.h  -  Implementacion DES autocontenida (un solo bloque de 64 bits, ECB)
- * ----------------------------------------------------------------------------
- * MOTIVO:
- *   El bruteforce.c original incluye <rpc/des_crypt.h> y usa ecb_crypt().
- *   En glibc moderno (Ubuntu 24.04, glibc 2.39) las funciones DES de Sun RPC
- *   fueron ELIMINADAS, por lo que ese header ya no existe y el codigo no
- *   compila. Esta cabecera reemplaza esa dependencia con una implementacion
- *   propia de DES, de modo que el programa compila sin librerias externas.
- *
- *   Expone dos funciones equivalentes a las del enunciado:
- *       des_encrypt_block(key64, block8)
- *       des_decrypt_block(key64, block8)
- *   donde key64 es una llave DES de 64 bits (incluye bits de paridad) y
- *   block8 es un bloque de 8 bytes que se cifra/descifra "in place".
- *
- * NOTA: implementacion didactica (tablas estandar del FIPS 46-3), pensada para
- *       claridad y correctitud, no para maximo rendimiento.
- * ========================================================================== */
 #ifndef DES_H
 #define DES_H
 

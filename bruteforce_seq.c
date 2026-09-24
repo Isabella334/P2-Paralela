@@ -1,32 +1,3 @@
-/* ============================================================================
- * bruteforce_seq.c  -  Version SECUENCIAL de fuerza bruta sobre DES
- * ----------------------------------------------------------------------------
- * Persona 2 - Implementacion secuencial y pruebas.
- *
- * Version secuencial FIEL al bruteforce.c del catedratico. Conserva:
- *   - La MISMA transformacion de llave (key <<= 1 ...) del original.
- *   - El MISMO cipher[] y la misma subcadena de busqueda (" the ").
- *   - Las mismas funciones conceptuales encrypt / decrypt / tryKey.
- *
- * Unicos cambios respecto al original:
- *   - Se elimina <rpc/des_crypt.h> (ecb_crypt/des_setparity) porque fue
- *     ELIMINADO de glibc moderno (Ubuntu 24.04) -> el original NO compila.
- *     Se reemplaza por des.h, una implementacion DES propia y byte-compatible
- *     con ecb_crypt (verificado: descifra el cipher del profe a "Save the
- *     planet " con la llave 105734).
- *   - Se quita MPI: se recorre el espacio en un solo proceso (secuencial).
- *   - Se agrega medicion de tiempo.
- *
- * Nota sobre des_setparity: solo ajusta los bits de paridad (bit 0 de cada
- * byte de la llave), que la permutacion PC-1 de DES descarta. Por eso omitirlo
- * NO cambia el resultado del cifrado.
- *
- * Uso:
- *   ./bruteforce_seq                 -> descifra el cipher real del profe
- *   ./bruteforce_seq <bits>          -> igual, limitando la busqueda a [0,2^bits)
- *   ./bruteforce_seq bench <bits>    -> prueba de rendimiento (peor caso):
- *                                       recorre TODO [0,2^bits) sin encontrar.
- * ========================================================================== */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

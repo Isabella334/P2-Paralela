@@ -1,24 +1,3 @@
-/* ============================================================================
- * bruteforce_mpi.c  -  PROGRAMA BASE (version paralela con MPI)
- * ----------------------------------------------------------------------------
- * Version del bruteforce.c del catedratico corregida para que COMPILE y CORRA.
- * Conserva la estructura y semantica del original (misma transformacion de
- * llave, mismo cipher[], misma subcadena " the ", misma logica MPI de reparto
- * y aviso con MPI_Irecv / MPI_Send / MPI_Wait).
- *
- * UNICO cambio de fondo: se reemplaza <rpc/des_crypt.h> (ecb_crypt /
- * des_setparity), eliminado de glibc moderno, por des.h (DES propio,
- * byte-compatible con ecb_crypt: descifra el cipher a "Save the planet ").
- *
- * Ajustes menores para robustez:
- *   - Cota de busqueda configurable por argumento (por defecto 2^56 como el
- *     original). El original recorreria 2^56 llaves; para las pruebas se pasa
- *     una cota menor.
- *   - Se usa long long en los mensajes para transportar la llave hallada.
- *
- * Compilar:  mpicc -O3 -o bruteforce_mpi bruteforce_mpi.c
- * Ejecutar:  mpirun -np 4 ./bruteforce_mpi 24     (busca en [0, 2^24))
- * ========================================================================== */
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
