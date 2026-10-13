@@ -3,6 +3,8 @@ Persona2_Avance.md
 # Binarios compilados
 bruteforce_seq
 bruteforce_mpi
+bruteforce_master
+cipher_tool
 
 *.o
 *.exe
