@@ -28,6 +28,22 @@ bench: bruteforce_seq
 	cat resultados.csv
 
 clean:
-	rm -f bruteforce_seq bruteforce_mpi resultados.csv .tmp.err
+	rm -f bruteforce_seq bruteforce_mpi bruteforce_master cipher_tool resultados.csv resultados_master.csv .tmp.err
 
 .PHONY: all crack bench clean
+
+# --- utilitario de cifrado + estrategia maestro-trabajador ---
+
+# Cifrar/descifrar un .txt con una llave (Parte B, no requiere MPI)
+cipher_tool: cipher_tool.c bruteforce_common.h des.h
+	$(CC) $(CFLAGS) -o cipher_tool cipher_tool.c
+
+# Estrategia maestro-trabajador (reparto dinamico del espacio de llaves)
+bruteforce_master: bruteforce_mpi_master.c bruteforce_common.h des.h
+	$(MPICC) -O3 -Wall -o bruteforce_master bruteforce_mpi_master.c
+
+# Benchmark de la estrategia maestro-trabajador (llave facil/media/dificil)
+bench_master: bruteforce_master
+	bash scripts/bench_master.sh
+
+.PHONY: bench_master

@@ -1,11 +1,5 @@
 /* cipher_tool - cifra/descifra un archivo de texto con DES usando una llave
- * entera como parametro (Parte B inciso 1). Secuencial, sin MPI.
- *
- *   ./cipher_tool encrypt <entrada.txt> <salida.bin> <llave>
- *   ./cipher_tool decrypt <entrada.bin> <llave> [palabra_clave]
- *
- * En 'decrypt', si se da palabra_clave, reporta si aparece en el texto
- * (mismo criterio de exito que la fuerza bruta). */
+ * entera como parametro. Secuencial, sin MPI.*/
 
 #include <stdio.h>
 #include <stdlib.h>

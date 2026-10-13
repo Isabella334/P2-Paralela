@@ -3,9 +3,8 @@
 
 /* Base compartida para las variantes de fuerza bruta sobre DES.
  * Centraliza la preparacion de llave, el cifrado/descifrado por bloques, la
- * prueba de una llave candidata y la carga de un texto desde archivo.
- * Todas las funciones son 'static' para poder incluir este header en un .c
- * sin colisiones de definicion. Depende de des.h (implementacion de DES). */
+ * prueba de una llave candidata y la carga de un texto desde archivo
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,17 +15,7 @@
 /* Tamano maximo de texto que manejamos (cipher + terminador). */
 #define BF_MAXLEN 4096
 
-/* Prepara los 8 bytes de la llave DES a partir de una llave entera.
- *
- * REPLICA EXACTA de la transformacion del bruteforce.c original. Reparte los
- * 56 bits utiles en 8 grupos de 7 bits (mascara 0xFE), dejando libre el bit de
- * paridad de cada byte (DES lo descarta en PC-1).
- *
- * CAVEAT: '0xFE << i*8' opera en 'int'. Para i>=4 el desplazamiento es >= 32
- * bits -> comportamiento indefinido; el codigo solo produce la llave correcta
- * compilado con -O3 (ver docs/04 fila 1). Se conserva asi a proposito para
- * mantener compatibilidad binaria con el cipher del catedratico y con el naive
- * del equipo. La correccion seria '0xFEL << (i*8)', pero obliga a re-cifrar. */
+/* Prepara los 8 bytes de la llave DES a partir de una llave entera*/
 static inline void key_to_bytes(long key, uint8_t kb[8]) {
     long k = 0;
     for (int i = 0; i < 8; ++i) {
