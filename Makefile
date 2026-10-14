@@ -9,8 +9,12 @@ all: bruteforce_seq
 bruteforce_seq: bruteforce_seq.c des.h
 	$(CC) $(CFLAGS) -o bruteforce_seq bruteforce_seq.c
 
-# --- Programa base paralelo (requiere MPI: sudo apt install mpich) ---
-bruteforce_mpi: bruteforce_mpi.c des.h
+# --- Acercamiento NAIVE paralelo / linea base (requiere MPI) ---
+bruteforce_naive: bruteforce_mpi.c bruteforce_common.h des.h
+	$(MPICC) -O3 -Wall -o bruteforce_naive bruteforce_mpi.c
+
+# Alias historico: mismo codigo que bruteforce_naive
+bruteforce_mpi: bruteforce_mpi.c bruteforce_common.h des.h
 	$(MPICC) -O3 -Wall -o bruteforce_mpi bruteforce_mpi.c
 
 # --- Descifrar el cipher real del catedratico ---
@@ -28,7 +32,7 @@ bench: bruteforce_seq
 	cat resultados.csv
 
 clean:
-	rm -f bruteforce_seq bruteforce_mpi bruteforce_master bruteforce_roundrobin cipher_tool resultados.csv resultados_master.csv resultados_roundrobin.csv .tmp.err
+	rm -f bruteforce_seq bruteforce_mpi bruteforce_naive bruteforce_master bruteforce_roundrobin cipher_tool resultados.csv resultados_master.csv resultados_roundrobin.csv resultados_naive.csv .tmp.err
 
 .PHONY: all crack bench clean
 
@@ -54,4 +58,8 @@ bench_master: bruteforce_master
 bench_roundrobin: bruteforce_roundrobin
 	MPIRUN_FLAGS=--oversubscribe bash scripts/bench_roundrobin.sh
 
-.PHONY: bench_master bench_roundrobin
+# Benchmark del acercamiento naive / linea base (llave facil/media/dificil)
+bench_naive: bruteforce_naive
+	MPIRUN_FLAGS=--oversubscribe bash scripts/bench_naive.sh
+
+.PHONY: bench_master bench_roundrobin bench_naive
