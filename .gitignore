@@ -4,10 +4,14 @@ Persona2_Avance.md
 bruteforce_seq
 bruteforce_mpi
 bruteforce_master
+bruteforce_roundrobin
 cipher_tool
 
 *.o
 *.exe
+
+# Config local del editor
+.vscode/
 
 # resultados.csv
 
