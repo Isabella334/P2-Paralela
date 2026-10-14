@@ -16,7 +16,7 @@ static void key_to_bytes(long key, uint8_t kb[8]) {
     long k = 0;
     for (int i = 0; i < 8; ++i) {
         key <<= 1;
-        k += (key & (0xFE << i * 8));   /* verbatim del original */
+        k += (key & (0xFEL << i * 8));   /* 0xFEL: mascara de 64 bits, evita UB del shift */
     }
     for (int i = 0; i < 8; ++i) kb[i] = (uint8_t)((k >> (8 * i)) & 0xFF);
 }
