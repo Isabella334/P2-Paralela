@@ -1,0 +1,13 @@
+estrategia,categoria,np,bits,key,tiempo_s,speedup
+roundrobin,facil,1,20,65536,0.6911,1.00
+roundrobin,facil,2,20,65536,0.4681,1.48
+roundrobin,facil,4,20,65536,0.3085,2.24
+roundrobin,facil,8,20,65536,0.3536,1.95
+roundrobin,media,1,20,524288,6.4391,1.00
+roundrobin,media,2,20,524288,3.7511,1.72
+roundrobin,media,4,20,524288,5.6245,1.14
+roundrobin,media,8,20,524288,4.4535,1.45
+roundrobin,dificil,1,20,851968,13.1866,1.00
+roundrobin,dificil,2,20,851968,8.6726,1.52
+roundrobin,dificil,4,20,851968,6.1671,2.14
+roundrobin,dificil,8,20,851968,5.9851,2.20
