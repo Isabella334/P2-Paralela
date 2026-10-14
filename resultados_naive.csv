@@ -1,0 +1,13 @@
+estrategia,categoria,np,bits,key,tiempo_s,speedup
+naive,facil,1,22,262144,0.5907,1.00
+naive,facil,2,22,262144,0.6108,0.97
+naive,facil,4,22,262144,0.6332,0.93
+naive,facil,8,22,262144,0.8806,0.67
+naive,media,1,22,2097152,4.8309,1.00
+naive,media,2,22,2097152,0.0025,1932.36
+naive,media,4,22,2097152,0.0025,1932.36
+naive,media,8,22,2097152,0.0040,1207.72
+naive,dificil,1,22,3407872,7.9723,1.00
+naive,dificil,2,22,3407872,3.1743,2.51
+naive,dificil,4,22,3407872,0.6413,12.43
+naive,dificil,8,22,3407872,0.9203,8.66
