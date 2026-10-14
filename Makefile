@@ -28,7 +28,7 @@ bench: bruteforce_seq
 	cat resultados.csv
 
 clean:
-	rm -f bruteforce_seq bruteforce_mpi bruteforce_master cipher_tool resultados.csv resultados_master.csv .tmp.err
+	rm -f bruteforce_seq bruteforce_mpi bruteforce_master bruteforce_roundrobin cipher_tool resultados.csv resultados_master.csv resultados_roundrobin.csv .tmp.err
 
 .PHONY: all crack bench clean
 
@@ -42,8 +42,16 @@ cipher_tool: cipher_tool.c bruteforce_common.h des.h
 bruteforce_master: bruteforce_mpi_master.c bruteforce_common.h des.h
 	$(MPICC) -O3 -Wall -o bruteforce_master bruteforce_mpi_master.c
 
+# Estrategia round-robin (reparto ciclico del espacio de llaves)
+bruteforce_roundrobin: bruteforce_mpi_roundrobin.c bruteforce_common.h des.h
+	$(MPICC) -O3 -Wall -o bruteforce_roundrobin bruteforce_mpi_roundrobin.c
+
 # Benchmark de la estrategia maestro-trabajador (llave facil/media/dificil)
 bench_master: bruteforce_master
 	bash scripts/bench_master.sh
 
-.PHONY: bench_master
+# Benchmark de la estrategia round-robin (llave facil/media/dificil)
+bench_roundrobin: bruteforce_roundrobin
+	MPIRUN_FLAGS=--oversubscribe bash scripts/bench_roundrobin.sh
+
+.PHONY: bench_master bench_roundrobin
