@@ -11,11 +11,11 @@ bruteforce_seq: bruteforce_seq.c des.h
 
 # --- Acercamiento NAIVE paralelo / linea base (requiere MPI) ---
 bruteforce_naive: bruteforce_mpi.c bruteforce_common.h des.h
-	$(MPICC) -O3 -Wall -o bruteforce_naive bruteforce_mpi.c
+	$(MPICC) -O3 -march=native -funroll-loops -Wall -o bruteforce_naive bruteforce_mpi.c
 
 # Alias historico: mismo codigo que bruteforce_naive
 bruteforce_mpi: bruteforce_mpi.c bruteforce_common.h des.h
-	$(MPICC) -O3 -Wall -o bruteforce_mpi bruteforce_mpi.c
+	$(MPICC) -O3 -march=native -funroll-loops -Wall -o bruteforce_mpi bruteforce_mpi.c
 
 # --- Descifrar el cipher real del catedratico ---
 crack: bruteforce_seq
@@ -44,11 +44,11 @@ cipher_tool: cipher_tool.c bruteforce_common.h des.h
 
 # Estrategia maestro-trabajador (reparto dinamico del espacio de llaves)
 bruteforce_master: bruteforce_mpi_master.c bruteforce_common.h des.h
-	$(MPICC) -O3 -Wall -o bruteforce_master bruteforce_mpi_master.c
+	$(MPICC) -O3 -march=native -funroll-loops -Wall -o bruteforce_master bruteforce_mpi_master.c
 
 # Estrategia round-robin (reparto ciclico del espacio de llaves)
 bruteforce_roundrobin: bruteforce_mpi_roundrobin.c bruteforce_common.h des.h
-	$(MPICC) -O3 -Wall -o bruteforce_roundrobin bruteforce_mpi_roundrobin.c
+	$(MPICC) -O3 -march=native -funroll-loops -Wall -o bruteforce_roundrobin bruteforce_mpi_roundrobin.c
 
 # Benchmark de la estrategia maestro-trabajador (llave facil/media/dificil)
 bench_master: bruteforce_master

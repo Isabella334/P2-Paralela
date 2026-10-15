@@ -17,3 +17,6 @@ cipher_tool
 # resultados.csv
 
 /docs
+
+# entorno virtual (graficas)
+.venv/

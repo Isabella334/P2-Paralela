@@ -80,6 +80,78 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
+    /* ---------- Modo CUSTOM: texto propio + llave plantada (sin MPI) ----------
+     * Mismos flags que las versiones MPI, para comparar el SECUENCIAL puro
+     * (1 core, turbo pleno, sin overhead de MPI) contra naive/roundrobin/master
+     * con el MISMO workload. Se activa si hay cualquier flag '--...'.
+     *   ./bruteforce_seq --file msg.txt --key K --keyword "frase" --bits N
+     *   ./bruteforce_seq --key K [--keyword "frase"] --bits N   (texto interno) */
+    {
+        const char *file = NULL, *kw = NULL;
+        long ckey = -1; int cbits = 24, isflag = 0;
+        for (int i = 1; i < argc; ++i) {
+            if      (!strcmp(argv[i], "--file")    && i+1 < argc) { file = argv[++i]; isflag = 1; }
+            else if (!strcmp(argv[i], "--key")     && i+1 < argc) { ckey = atol(argv[++i]); isflag = 1; }
+            else if (!strcmp(argv[i], "--keyword") && i+1 < argc) { kw   = argv[++i]; isflag = 1; }
+            else if (!strcmp(argv[i], "--bits")    && i+1 < argc) { cbits = atoi(argv[++i]); isflag = 1; }
+            else if (!strncmp(argv[i], "--", 2)) { fprintf(stderr, "argumento invalido: %s\n", argv[i]); return 1; }
+        }
+        if (isflag) {
+            if (cbits < 1 || cbits > 60) { fprintf(stderr, "--bits fuera de rango\n"); return 1; }
+            static const char PLAIN_DEMO[] = "Esta es una prueba de proyecto 2";
+            const char *csearch = kw ? kw : "es una prueba de";
+            char buf[4104]; int clen = 0; char fuente[300];
+
+            if (file) {                       /* texto desde archivo */
+                FILE *f = fopen(file, "rb");
+                if (!f) { fprintf(stderr, "error: no se pudo abrir '%s'\n", file); return 1; }
+                clen = (int)fread(buf, 1, 4096, f);
+                int extra = getc(f) != EOF; fclose(f);
+                if (clen == 0) { fprintf(stderr, "error: '%s' vacio\n", file); return 1; }
+                if (extra) { fprintf(stderr, "error: '%s' excede 4096 bytes\n", file); return 1; }
+                long k = ckey >= 0 ? ckey : 42;
+                while (clen % 8 != 0) buf[clen++] = ' ';
+                encrypt(k, buf, clen);
+                ckey = k;
+                snprintf(fuente, sizeof(fuente), "%s (cifrado con llave %ld)", file, k);
+            } else if (ckey >= 0) {           /* texto interno */
+                clen = (int)strlen(PLAIN_DEMO);
+                memcpy(buf, PLAIN_DEMO, clen);
+                while (clen % 8 != 0) buf[clen++] = ' ';
+                encrypt(ckey, buf, clen);
+                snprintf(fuente, sizeof(fuente), "<texto interno> (cifrado con llave %ld)", ckey);
+            } else { fprintf(stderr, "error: da --file o --key\n"); return 1; }
+
+            uint64_t upper = (uint64_t)1 << cbits;
+            struct timespec t0, t1;
+            clock_gettime(CLOCK_MONOTONIC, &t0);
+            long long found = -1;
+            for (uint64_t k = 0; k < upper; ++k) {
+                char temp[4104];
+                memcpy(temp, buf, clen); temp[clen] = 0;
+                decrypt((long)k, temp, clen);
+                if (strstr(temp, csearch)) { found = (long long)k; break; }
+            }
+            clock_gettime(CLOCK_MONOTONIC, &t1);
+            double secs = (t1.tv_sec - t0.tv_sec) + (t1.tv_nsec - t0.tv_nsec) / 1e9;
+
+            printf("=== Secuencial (sin MPI) | cota=2^%d ===\n", cbits);
+            printf("Fuente        : %s\n", fuente);
+            printf("Palabra clave : \"%s\"\n", csearch);
+            if (found >= 0) {
+                char temp[4104]; memcpy(temp, buf, clen); temp[clen] = 0;
+                decrypt(found, temp, clen);
+                printf("Llave hallada : %lld\n", found);
+                printf("Texto         : \"%s\"\n", temp);
+            } else {
+                printf("Llave NO encontrada en la cota dada.\n");
+            }
+            printf("Tiempo (s)    : %.4f\n", secs);
+            fprintf(stderr, "CSV,secuencial,1,%d,%lld,%.4f\n", cbits, found, secs);
+            return 0;
+        }
+    }
+
     /* ---------- Modo normal: descifrar el cipher REAL del profe ---------- */
     int len = (int)strlen((char *)cipher);          /* 16 bytes = 2 bloques */
     int bits = (argc >= 2) ? atoi(argv[1]) : 28;    /* cota superior 2^bits */
